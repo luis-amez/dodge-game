@@ -35,12 +35,22 @@ class Player {
     this.x += this.speed;
   }
 
+  turn(direction) {
+    if(direction == 'right') {
+      this.turnRight();
+    } else if(direction == 'left') {
+      this.turnLeft();
+    };
+  }
+
   turnRight() {
-    this.speed = Math.abs(this.speed)
+    this.speed += 0.1;
+    console.log('turnright');
   }
 
   turnLeft() {
-    this.speed = Math.abs(this.speed) * -1
+    this.speed -= 0.1;
+    console.log('turnleft');
   }
 
   hit() {
@@ -61,6 +71,38 @@ class Game {
 
   start() {
     createCanvas(this.width, this.height);
+
+    // CRAZINESS
+    var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
+    var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
+    var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+
+    var directions = [ 'left', 'rigth'];
+    var grammar = '#JSGF V1.0; grammar directions; public <color> = ' + directions.join(' | ') + ' ;'
+
+    var recognition = new SpeechRecognition();
+    var speechRecognitionList = new SpeechGrammarList();
+    speechRecognitionList.addFromString(grammar, 1);
+    recognition.grammars = speechRecognitionList;
+    recognition.continuous = true;
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.start();
+
+
+    recognition.onresult = (event) => {
+
+      var last = event.results.length - 1;
+      var direction = event.results[last][0].transcript;
+
+      console.log(direction.trim());
+      direction.split(" ").forEach((word) => {
+        this.player.turn(word.trim());
+      })
+    }
+
   }
 
   render() {
