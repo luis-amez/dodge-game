@@ -56,6 +56,10 @@ class Player {
   hit() {
     this.lives--;
   }
+
+  bounce() {
+    this.speed = this.speed * (-1);
+  }
 }
 
 class Game {
@@ -119,6 +123,9 @@ class Game {
   update() {
     this.moveBeats();
     this.player.move();
+    if(this.isPlayerOut()) {
+      this.playerBounce();
+    }
     this.checkHits();
     this.checkDodged();
     if(this.isHappeningRandomEvent(this.prob)) {
@@ -185,6 +192,14 @@ class Game {
   youLose() {
     background(0, 0, 0);
     text(`Your final score is ${this.score}. Try again!`, this.width / 2 - 100, this.height / 2 - 5) 
+  }
+
+  isPlayerOut() {
+    return this.player.x < 0 || this.player.x > this.width - this.player.size;
+  }
+
+  playerBounce() {
+    this.player.bounce();
   }
 }
 
