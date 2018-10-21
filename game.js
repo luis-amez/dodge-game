@@ -17,7 +17,7 @@ class Beat {
 }
 
 class Player {
-  constructor(x = 305, y = 415) {
+  constructor(x = 305, y = 595) {
     this.x = x;
     this.y = y;
     this.size = 30;
@@ -44,12 +44,12 @@ class Player {
   }
 
   turnRight() {
-    this.speed += 0.1;
+    this.speed += 0.5;
     console.log('turnright');
   }
 
   turnLeft() {
-    this.speed -= 0.1;
+    this.speed -= 0.5;
     console.log('turnleft');
   }
 
@@ -63,16 +63,18 @@ class Game {
     this.beats = [];
     this.speed = 1.5;
     this.prob = 0.01;
-    this.height = 460;
+    this.height = 640;
     this.width = 640;
     this.score = 0;
     this.player = new Player();
   }
 
   start() {
-    createCanvas(this.width, this.height);
+    createCanvas(this.width, this.height); 
+    this.initSpeechRecognition();
+  }
 
-    // CRAZINESS
+  initSpeechRecognition() {
     var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
     var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
     var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
@@ -91,7 +93,6 @@ class Game {
 
     recognition.start();
 
-
     recognition.onresult = (event) => {
 
       var last = event.results.length - 1;
@@ -102,7 +103,6 @@ class Game {
         this.player.turn(word.trim());
       })
     }
-
   }
 
   render() {
@@ -151,13 +151,13 @@ class Game {
     return false;
   }
 
-  getRandom(min, max) {
+  _getRandom(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   createBeat() {
-    let beatColor = [this.getRandom(50, 255), this.getRandom(50, 255), this.getRandom(50, 255)]
-    let beat = new Beat(beatColor, this.getRandom(10, this.width - 40));
+    let beatColor = [this._getRandom(50, 255), this._getRandom(50, 255), this._getRandom(50, 255)]
+    let beat = new Beat(beatColor, this._getRandom(10, this.width - 40));
     this.beats.push(beat);
   }
 
